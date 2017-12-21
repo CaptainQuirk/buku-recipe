@@ -1,0 +1,58 @@
+#!/bin/bash
+
+CACHE_DIR=$HOME/.cache/configuration
+DROPBOX_DIR=$HOME/Dropbox
+BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
+RUST_INSTALL_FILE=rustup.sh
+
+mkdir -p $CACHE_DIR/buku
+
+brew install buku
+
+brew install golang
+go get github.com/mattn/go-sqlite3
+
+
+
+if [ ! -f $CACHE_DIR/buku/$RUST_INSTALL_FILE ]; then
+    curl -sSf https://static.rust-lang.org/rustup.sh -o $CACHE_DIR/buku/$RUST_INSTALL_FILE
+    sh $CACHE_DIR/buku/$RUST_INSTALL_FILE
+fi
+
+if [ ! -d $CACHE_DIR/buku/bukubrow ]; then
+    git clone https://github.com/SamHH/bukubrow.git $CACHE_DIR/buku/bukubrow
+fi
+
+#if [ ! -d $CACHE_DIR/buku/bukubrow/release ]; then
+    cd $CACHE_DIR/buku/bukubrow
+    #make binary-linux-x64
+    BUKUBROW_RELEASE_DIR=$CACHE_DIR/buku/bukubrow/release
+    if [ -f $BUKUBROW_RELEASE_DIR/binary-linux-x64.zip ]; then
+        cd $BUKUBROW_RELEASE_DIR/
+        unzip binary-linux-x64.zip
+        chmod +x install.sh
+        ./install.sh
+        cd -
+    fi
+#fi
+
+# TODO prompt user to install browser extensions
+
+mkdir -p $BUKU_BOOKMARK_DIR
+
+
+if [ ! -L $BUKU_BOOKMARK_DIR/bookmarks.db ]; then
+    ln -s $DROPBOX_DIR/bookmarks.db $BUKU_BOOKMARK_DIR/bookmarks.db
+fi
+
+# ROFI
+brew install gawk
+sudo apt-get install rofi
+
+if [ ! -d $CACHE_DIR/buku/buku_run ]; then
+    git clone https://github.com/carnager/buku_run.git $CACHE_DIR/buku/buku_run
+    cd $CACHE_DIR/buku/buku_run
+    sudo make install
+    cd -
+fi
+
