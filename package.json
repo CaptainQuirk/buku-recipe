@@ -1,5 +1,5 @@
 {
-  "name": "buku-recipe",
+  "name": "hillaryklingon/buku-recipe",
   "description": "Installs buku bookmark manager, along with the bukubrow extension and a rofi buku frontend. The bookmark database is symlinked to a dropbox file",
   "global": true,
   "install": "make install",
