@@ -1,14 +1,19 @@
 #!/bin/bash
 
+# TODO move CACHE_DIR to compile file
 CACHE_DIR=$HOME/.cache/configuration
 DROPBOX_DIR=$HOME/Dropbox
 BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
+
+# TODO remove this variable
 RUST_INSTALL_FILE=rustup.sh
 
+# TODO call a function to initialize a cache directory for buku
 mkdir -p $CACHE_DIR/buku
 
 brew install buku
 
+# TODO Remove this
 brew install golang
 go get github.com/mattn/go-sqlite3
 
@@ -36,8 +41,9 @@ fi
     fi
 #fi
 
-# TODO prompt user to install browser extensions
+# TODO call function to prompt user to install browser extensions
 
+# TODO call function to initialize a data space for buku
 mkdir -p $BUKU_BOOKMARK_DIR
 
 
@@ -47,6 +53,8 @@ fi
 
 # ROFI
 brew install gawk
+
+# TODO call a function to install with apt
 sudo apt-get install rofi
 
 if [ ! -d $CACHE_DIR/buku/buku_run ]; then
