@@ -1,58 +1,57 @@
 #!/bin/bash
 
+#set -e
+
 CACHE_DIR=$HOME/.cache/configuration
 DROPBOX_DIR=$HOME/Dropbox
 BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
 RUST_INSTALL_FILE=rustup.sh
+WWW_CONFIG_PATH=$HOME/.config/www
 
-mkdir -p $CACHE_DIR/buku
+mkdir -p "$CACHE_DIR/buku"
 
-brew install buku
+# Install buku
+shef brew buku
 
-brew install golang
+# Install bukubrow native extension
+shef brew golang
 go get github.com/mattn/go-sqlite3
 
-
-
-if [ ! -f $CACHE_DIR/buku/$RUST_INSTALL_FILE ]; then
-    curl -sSf https://static.rust-lang.org/rustup.sh -o $CACHE_DIR/buku/$RUST_INSTALL_FILE
-    sh $CACHE_DIR/buku/$RUST_INSTALL_FILE
+# TODO move rust install in another recipe
+if [ ! -f "$CACHE_DIR/buku/$RUST_INSTALL_FILE" ]; then
+    curl -sSf https://static.rust-lang.org/rustup.sh -o "$CACHE_DIR/buku/$RUST_INSTALL_FILE"
+    sh "$CACHE_DIR/buku/$RUST_INSTALL_FILE"
 fi
 
-if [ ! -d $CACHE_DIR/buku/bukubrow ]; then
-    git clone https://github.com/SamHH/bukubrow.git $CACHE_DIR/buku/bukubrow
-fi
-
-#if [ ! -d $CACHE_DIR/buku/bukubrow/release ]; then
-    cd $CACHE_DIR/buku/bukubrow
-    #make binary-linux-x64
-    BUKUBROW_RELEASE_DIR=$CACHE_DIR/buku/bukubrow/release
-    if [ -f $BUKUBROW_RELEASE_DIR/binary-linux-x64.zip ]; then
-        cd $BUKUBROW_RELEASE_DIR/
-        unzip binary-linux-x64.zip
-        chmod +x install.sh
-        ./install.sh
-        cd -
+BUKUBROW_CACHE_DIR=$CACHE_DIR/buku/bukubrow/
+mkdir -p "$BUKUBROW_CACHE_DIR"
+if [ ! -f "$WWW_CONFIG_PATH/NativeMessagingHosts/com.samhh.bukubrow.json" ]; then
+    if [ ! -f "$BUKUBROW_CACHE_DIR/binary-linux-x64-2.3.0.zip" ]; then
+        curl -sSfL "https://github.com/SamHH/bukubrow/releases/download/2.3.0/binary-linux-x64.zip" -o "$BUKUBROW_CACHE_DIR/binary-linux-x64-2.3.0.zip"
     fi
-#fi
+
+    cd "$BUKUBROW_CACHE_DIR" || exit 1
+    unzip binary-linux-x64-2.3.0.zip
+    chmod +x install.sh
+    ./install.sh
+    cd - || exit 1
+
+    mv "$HOME/.config/google-chrome/NativeMessagingHosts/com.samhh.bukubrow.json" "$WWW_CONFIG_PATH/NativeMessagingHosts"
+fi
 
 # TODO prompt user to install browser extensions
-
-mkdir -p $BUKU_BOOKMARK_DIR
-
-
-if [ ! -L $BUKU_BOOKMARK_DIR/bookmarks.db ]; then
-    ln -s $DROPBOX_DIR/bookmarks.db $BUKU_BOOKMARK_DIR/bookmarks.db
+mkdir -p "$BUKU_BOOKMARK_DIR"
+if [ ! -L "$BUKU_BOOKMARK_DIR/bookmarks.db" ]; then
+    ln -s "$DROPBOX_DIR/bookmarks.db" "$BUKU_BOOKMARK_DIR/bookmarks.db"
 fi
 
 # ROFI
-brew install gawk
-sudo apt-get install rofi
+shef brew gawk
+sudo apt-get install rofi -y > /dev/null 2>&1
 
-if [ ! -d $CACHE_DIR/buku/buku_run ]; then
-    git clone https://github.com/carnager/buku_run.git $CACHE_DIR/buku/buku_run
-    cd $CACHE_DIR/buku/buku_run
+if [ ! -d "$CACHE_DIR/buku/buku_run" ]; then
+    git clone https://github.com/carnager/buku_run.git "$CACHE_DIR/buku/buku_run"
+    cd "$CACHE_DIR/buku/buku_run" || exit 1
     sudo make install
-    cd -
+    cd - || exit 1
 fi
-
