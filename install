@@ -13,10 +13,6 @@ mkdir -p "$CACHE_DIR/buku"
 # Install buku
 shef brew buku
 
-# Install bukubrow native extension
-shef brew golang
-go get github.com/mattn/go-sqlite3
-
 # TODO move rust install in another recipe
 if [ ! -f "$CACHE_DIR/buku/$RUST_INSTALL_FILE" ]; then
     curl -sSf https://static.rust-lang.org/rustup.sh -o "$CACHE_DIR/buku/$RUST_INSTALL_FILE"
