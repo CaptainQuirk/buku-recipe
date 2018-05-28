@@ -5,7 +5,6 @@
 CACHE_DIR=$HOME/.cache/configuration
 DROPBOX_DIR=$HOME/Dropbox
 BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
-RUST_INSTALL_FILE=rustup.sh
 WWW_CONFIG_PATH=$HOME/.config/www
 
 mkdir -p "$CACHE_DIR/buku"
@@ -14,10 +13,9 @@ mkdir -p "$CACHE_DIR/buku"
 shef brew buku
 
 # TODO move rust install in another recipe
-if [ ! -f "$CACHE_DIR/buku/$RUST_INSTALL_FILE" ]; then
-    curl -sSf https://static.rust-lang.org/rustup.sh -o "$CACHE_DIR/buku/$RUST_INSTALL_FILE"
-    sh "$CACHE_DIR/buku/$RUST_INSTALL_FILE"
-fi
+shef script https://static.rust-lang.org/rustup.sh \
+  --binary cargo \
+  --interpreter sh
 
 BUKUBROW_CACHE_DIR=$CACHE_DIR/buku/bukubrow/
 mkdir -p "$BUKUBROW_CACHE_DIR"
