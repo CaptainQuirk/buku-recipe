@@ -49,3 +49,7 @@ if [ ! -d "$CACHE_DIR/buku/buku_run" ]; then
     sudo make install
     cd - || exit 1
 fi
+
+echo "Buku installed"
+
+exit 0
