@@ -1,4 +1,4 @@
 install:
-	/bin/bash install
+	@/bin/bash install
 
 .PHONY: install
