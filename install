@@ -41,7 +41,7 @@ fi
 
 # ROFI
 shef brew gawk
-sudo apt-get install rofi -y > /dev/null 2>&1
+shef apt rofi
 
 if [ ! -d "$CACHE_DIR/buku/buku_run" ]; then
     git clone https://github.com/carnager/buku_run.git "$CACHE_DIR/buku/buku_run"
