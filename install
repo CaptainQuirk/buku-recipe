@@ -8,48 +8,34 @@ BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
 WWW_CONFIG_PATH=$HOME/.config/www
 
 mkdir -p "$CACHE_DIR/buku"
+shef directory "Create cache dir for buku" \
+  --path "$CACHE_DIR/buku" \
+  --parents
 
 # Install buku
 shef brew buku
 
 # TODO move rust install in another recipe
 shef script https://static.rust-lang.org/rustup.sh \
-  --binary cargo \
+  --if-not-installed cargo \
   --interpreter sh
 
-BUKUBROW_CACHE_DIR=$CACHE_DIR/buku/bukubrow/
-mkdir -p "$BUKUBROW_CACHE_DIR"
-if [ ! -f "$WWW_CONFIG_PATH/NativeMessagingHosts/com.samhh.bukubrow.json" ]; then
-    if [ ! -f "$BUKUBROW_CACHE_DIR/binary-linux-x64-2.3.0.zip" ]; then
-        curl -sSfL "https://github.com/SamHH/bukubrow/releases/download/2.3.0/binary-linux-x64.zip" -o "$BUKUBROW_CACHE_DIR/binary-linux-x64-2.3.0.zip"
-    fi
+shef script "Install bukubrow native messaging" \
+  --file bukubrow.sh \
+  --interpreter sh
 
-    cd "$BUKUBROW_CACHE_DIR" || exit 1
-    unzip binary-linux-x64-2.3.0.zip
-    chmod +x install.sh
-    ./install.sh
-    cd - || exit 1
+shef directory "Create directory for buku bookmarks" \
+  --path $BUKU_BOOKMARK_DIR \
+  --parents
 
-    mv "$HOME/.config/google-chrome/NativeMessagingHosts/com.samhh.bukubrow.json" "$WWW_CONFIG_PATH/NativeMessagingHosts"
-fi
-
-# TODO prompt user to install browser extensions
-mkdir -p "$BUKU_BOOKMARK_DIR"
-if [ ! -L "$BUKU_BOOKMARK_DIR/bookmarks.db" ]; then
-    ln -s "$DROPBOX_DIR/bookmarks.db" "$BUKU_BOOKMARK_DIR/bookmarks.db"
-fi
+shef link "Linking buku bookmarks" \
+  --target $DROPBOX_DIR/bookmarks.db \
+  --to $BUKU_BOOKMARK_DIR/bookmarks.db
 
 # ROFI
 shef brew gawk
 shef apt rofi
 
-if [ ! -d "$CACHE_DIR/buku/buku_run" ]; then
-    git clone https://github.com/carnager/buku_run.git "$CACHE_DIR/buku/buku_run"
-    cd "$CACHE_DIR/buku/buku_run" || exit 1
-    sudo make install
-    cd - || exit 1
-fi
-
-echo "Buku installed"
-
-exit 0
+shef script "Install bukubrow native messaging" \
+  --file buku_run.sh \
+  --interpreter sh
