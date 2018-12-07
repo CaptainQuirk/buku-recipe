@@ -5,9 +5,7 @@
 CACHE_DIR=$HOME/.cache/configuration
 DROPBOX_DIR=$HOME/Dropbox
 BUKU_BOOKMARK_DIR=$HOME/.local/share/buku
-WWW_CONFIG_PATH=$HOME/.config/www
 
-mkdir -p "$CACHE_DIR/buku"
 shef directory "Create cache dir for buku" \
   --path "$CACHE_DIR/buku" \
   --parents
@@ -17,25 +15,25 @@ shef brew buku
 
 # TODO move rust install in another recipe
 shef script https://static.rust-lang.org/rustup.sh \
-  --if-not-installed cargo \
-  --interpreter sh
+  --if-not-installed cargo
 
 shef script "Install bukubrow native messaging" \
   --file bukubrow.sh \
-  --interpreter sh
+  --interactive
 
 shef directory "Create directory for buku bookmarks" \
-  --path $BUKU_BOOKMARK_DIR \
+  --path "$BUKU_BOOKMARK_DIR" \
   --parents
 
 shef link "Linking buku bookmarks" \
-  --target $DROPBOX_DIR/bookmarks.db \
-  --to $BUKU_BOOKMARK_DIR/bookmarks.db
+  --target "$DROPBOX_DIR/bookmarks.db" \
+  --to "$BUKU_BOOKMARK_DIR/bookmarks.db"
 
 # ROFI
 shef brew gawk
 shef apt rofi
 
-shef script "Install bukubrow native messaging" \
+shef script "Install bukurun" \
   --file buku_run.sh \
-  --interpreter sh
+  --interactive
+
