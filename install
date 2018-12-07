@@ -34,6 +34,5 @@ shef brew gawk
 shef apt rofi
 
 shef script "Install bukurun" \
-  --file buku_run.sh \
-  --interactive
+  --file buku_run.sh
 
